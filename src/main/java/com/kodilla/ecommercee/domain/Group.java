@@ -1,6 +1,7 @@
 package com.kodilla.ecommercee.domain;
 
-
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -11,7 +12,9 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @Table
-@Entity(name = "_GROUP")
+@Builder
+@AllArgsConstructor
+@Entity(name = "PRODUCT_GROUP")
 public class Group {
 
     @Id
@@ -20,6 +23,7 @@ public class Group {
     private Long id;
     @Column
     private String groupName;
+
     @Column
     private String description;
     @OneToMany(

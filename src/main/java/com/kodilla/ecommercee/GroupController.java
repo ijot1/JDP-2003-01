@@ -1,35 +1,39 @@
 package com.kodilla.ecommercee;
 
 import com.kodilla.ecommercee.domain.GroupDto;
+import com.kodilla.ecommercee.service.GroupService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
+
+import java.awt.*;
 import java.util.List;
 
 @RestController
 @RequestMapping("/v1/ecommercee/group")
 public class GroupController {
+
+    @Autowired
+    private GroupService groupService;
+
     @GetMapping(value = "getGroups")
     public List<GroupDto> getGroups() {
-        return new ArrayList<>();
+        return groupService.getGroups();
     }
 
-    @PostMapping(value = "createGroup")
+    @PostMapping(value = "createGroup", consumes = MediaType.APPLICATION_JSON_VALUE)
     public void createGroup(@RequestBody GroupDto groupDto) {
+        groupService.create(groupDto);
     }
 
     @PutMapping(value = "updateGroup")
     public GroupDto updateGroup(@RequestBody GroupDto groupDto) {
-        return groupDto;
-    }
-
-    @RequestMapping(method = RequestMethod.DELETE, value = "deleteGroup")
-    public void deleteGroup(@RequestParam Long id) {
-        System.out.println("Group has been deleted");
+        return groupService.update(groupDto);
     }
 
     @GetMapping(value = "getGroup")
-    public GroupDto getGroup(Long groupId) {
-        return new GroupDto(1L, "Cars", "Vehicles likecars");
+    public GroupDto getGroup(@RequestParam Long groupId) {
+        return groupService.getGroup(groupId);
     }
 }

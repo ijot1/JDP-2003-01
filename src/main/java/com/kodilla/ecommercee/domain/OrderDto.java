@@ -1,9 +1,6 @@
 package com.kodilla.ecommercee.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -12,6 +9,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
+@Setter
 @Builder
 public class OrderDto {
     private Long id;
@@ -29,4 +27,5 @@ public class OrderDto {
 
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
+
 }

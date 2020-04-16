@@ -1,20 +1,26 @@
 package com.kodilla.ecommercee.domain;
 
-import lombok.*;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@Builder
 @Entity
 @Table(name="CART_ITEM")
 public class CartItem {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "CART_ITEM_ID")
     private Long id;
 
     @Column(name="PRODUCT_ID")
@@ -35,5 +41,13 @@ public class CartItem {
     @ManyToOne
     @JoinColumn(name="CART_ID")
     private Cart cart;
+
+    @OneToMany(
+            targetEntity = Product.class,
+            cascade = CascadeType.ALL,
+            mappedBy = "cartItem",
+            fetch = FetchType.LAZY
+    )
+    private List<Product> products = new ArrayList<>();
 }
 

@@ -1,46 +1,40 @@
 package com.kodilla.ecommercee;
 
-import com.kodilla.ecommercee.domain.DeliveryType;
-import com.kodilla.ecommercee.domain.OrderDto;
-import com.kodilla.ecommercee.domain.OrderStatus;
-import com.kodilla.ecommercee.domain.PaymentType;
+import com.kodilla.ecommercee.domain.*;
+import com.kodilla.ecommercee.service.OrderService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
-
 @RestController
-@RequestMapping("/v1/ecommercee/Order")
+@RequestMapping("/v1/ecommercee/orders/")
 public class OrderController {
+    private final OrderService orderService;
+
+    @Autowired
+    public OrderController(OrderService orderService) {
+        this.orderService = orderService;
+    }
+
     @RequestMapping(method = RequestMethod.GET, value = "getOrders")
     public List<OrderDto> getOrders() {
-        return new ArrayList<>();
+        return orderService.getOrders();
     }
     @RequestMapping(method = RequestMethod.GET, value = "getOrder")
-
     public OrderDto getOrder(@RequestParam Long orderId) {
-        return new OrderDto(1L, 1L, 1L, 1L, LocalDate.now().plusDays(10),
-                DeliveryType.TO_HOME, PaymentType.PAYU, OrderStatus.ORDER_PLACED);
-
+        return orderService.getOrderById(orderId);
     }
     @RequestMapping(method = RequestMethod.DELETE, value = "deleteOrder")
     public void deleteOrder(@RequestParam Long orderId) {
-        System.out.println("DeleteOrder @@@####@@@###");
+        orderService.deleteOrder(orderId);
     }
-
     @RequestMapping(method = RequestMethod.PUT, value = "updateOrder")
-
     public OrderDto updateOrder(@RequestBody OrderDto orderDto) {
-        return new OrderDto(1L, 1L, 1L, 1L, LocalDate.now().plusDays(10),
-                DeliveryType.TO_HOME, PaymentType.PAYU, OrderStatus.ORDER_PLACED);
+        return orderService.updateOrder(orderDto);
     }
-
-
     @RequestMapping(method = RequestMethod.POST, value = "createOrder")
     public void createOrder(@RequestBody OrderDto orderDto) {
-        System.out.println("CreateOrder #@@@@@@@@@@@###!@%%%%%%%");
+        orderService.createOrder(orderDto);
     }
-
 }
