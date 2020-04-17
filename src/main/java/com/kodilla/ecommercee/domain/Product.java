@@ -1,6 +1,7 @@
 package com.kodilla.ecommercee.domain;
 
 
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,6 +20,7 @@ public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
 
     @ManyToOne
     @JoinColumn(name="GROUP_ID")

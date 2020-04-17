@@ -2,42 +2,46 @@ package com.kodilla.ecommercee;
 
 
 import com.kodilla.ecommercee.domain.CartItemDto;
+import com.kodilla.ecommercee.domain.EntityNotFoundException;
+import com.kodilla.ecommercee.service.CartItemService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
 @RequestMapping("/v1/ecommercee/cartItem")
 public class CartItemController {
 
+    @Autowired
+    private CartItemService cartItemService;
+
+
     @RequestMapping(method = RequestMethod.GET, value = "getCartItems")
     public List<CartItemDto> getCartItems() {
-        return new ArrayList<>();
+        return cartItemService.getCartItems();
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "getCartItem")
-    public CartItemDto getCartItem(@RequestParam Long id) {
-        return new CartItemDto(1L, 1L, "TV", LocalDate.now(),
-                10L, LocalDate.now());
+    public CartItemDto getCartItem(@RequestParam Long id) throws EntityNotFoundException {
+        return cartItemService.getCartItem(id);
     }
 
     @RequestMapping(method = RequestMethod.DELETE, value = "deleteCartItem")
     public void deleteCartItem(@RequestParam Long id) {
-        System.out.println("CartItem has been deleted");
+        cartItemService.deleteCartItem(id);
     }
 
     @RequestMapping(method = RequestMethod.PUT, value = "updateCartItem")
-    public CartItemDto updateCartItem(@RequestBody CartItemDto cartItemDto) {
-        return new CartItemDto(2L, 2L, "TV - UPDATE", LocalDate.now(),
-                10L, LocalDate.now());
-
+    public CartItemDto updateCartItem(@RequestBody CartItemDto cartItemDto) throws EntityNotFoundException {
+        return cartItemService.update(cartItemDto);
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "createCartItem")
-    public void createCartItem(@RequestBody CartItemDto cartItemDto) {
-        System.out.println("CartItem was created");
+    @RequestMapping(method = RequestMethod.POST, value = "createCartItem",
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    public CartItemDto createCartItem(@RequestBody CartItemDto cartItemDto) throws EntityNotFoundException {
+        return cartItemService.create(cartItemDto);
     }
-
 }
+

@@ -1,34 +1,55 @@
 package com.kodilla.ecommercee.service;
 
 import com.kodilla.ecommercee.domain.Cart;
+import com.kodilla.ecommercee.domain.CartDto;
+import com.kodilla.ecommercee.domain.EntityNotFoundException;
+import com.kodilla.ecommercee.mapper.CartMapper;
+import com.kodilla.ecommercee.repository.CartItemRepository;
 import com.kodilla.ecommercee.repository.CartRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
+
 
 @Service
 public class CartService {
-    private final CartRepository cartRepository;
 
     @Autowired
-    public CartService(CartRepository cartRepository) {
-        this.cartRepository = cartRepository;
+    CartMapper cartMapper;
+
+    @Autowired
+    CartRepository cartRepository;
+
+    @Autowired
+    CartItemRepository cartItemRepository;
+
+    public List<CartDto> getCarts() {
+        return cartMapper.mapToCartDtoList(cartRepository.findAll());
     }
 
-    public List<Cart> getAllCarts() {
-        return cartRepository.findAll();
+    public CartDto getCart(final Long id) throws EntityNotFoundException {
+        Optional<Cart> cart = cartRepository.findById(id);
+        return cartMapper.mapToCartDto(cart
+                .orElseThrow(() -> new EntityNotFoundException(Cart.class, id)));
+
     }
 
-    public Cart saveCart(final Cart cart) {
-        return cartRepository.save(cart);
+    public CartDto createCart(CartDto cartDto) throws EntityNotFoundException {
+        Cart cart = cartMapper.mapToCart(cartDto);
+        return cartMapper.mapToCartDto(cartRepository.save(cart));
     }
 
-    public Cart getCartById(final Long id) {
-        return cartRepository.findById(id).orElse(null);
+    public CartDto update(CartDto cartDto) throws EntityNotFoundException {
+        cartRepository.findById(cartDto.getId()).orElseThrow(() -> new EntityNotFoundException(Cart.class, cartDto.getId()));
+        ;
+
+        return cartMapper.mapToCartDto(cartRepository.save(cartMapper.mapToCart(cartDto)));
     }
 
     public void deleteCart(final Long id) {
+        cartRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(Cart.class, id));
         cartRepository.deleteById(id);
     }
 }
