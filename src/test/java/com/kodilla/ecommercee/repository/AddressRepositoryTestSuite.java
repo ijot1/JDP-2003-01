@@ -8,9 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import javax.transaction.Transactional;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Optional;
 
 @RunWith(SpringRunner.class)
@@ -21,9 +19,21 @@ public class AddressRepositoryTestSuite {
     @Autowired
     private AddressRepository addressRepository;
 
+    @Autowired
+    private OrderRepository orderRepository;
 
     @Test
     public void testAddressWithOrder() {
+
+        Order order = Order.builder()
+                .address(new Address())
+                .orderDate(LocalDate.now())
+                .deliveryDate(LocalDate.now().plusDays(1))
+                .orderStatus(OrderStatus.ORDER_CANCELED)
+                .deliveryType(DeliveryType.TO_HOME)
+                .paymentType(PaymentType.PAYU)
+                .build();
+
         Address address = Address.builder()
                 .city("Radom")
                 .houseNumber("13")
@@ -32,21 +42,15 @@ public class AddressRepositoryTestSuite {
                 .zipCode("31313213")
                 .build();
 
-        Order order = Order.builder()
-                .orderDate(LocalDate.now())
-                .deliveryDate(LocalDate.now().plusDays(1))
-                .orderStatus(OrderStatus.ORDER_CANCELED)
-                .deliveryType(DeliveryType.TO_HOME)
-                .paymentType(PaymentType.PAYU)
-                .build();
-
-        order.setAddress(address);
         Address saveAddress = addressRepository.save(address);
+        order.setAddress(address);
         Long addressId = saveAddress.getId();
+        Order orderSaved = orderRepository.save(order);
+        Long addrIdFromOrder = orderSaved.getAddress().getId();
 
-        Assert.assertEquals("Radom", order.getAddress().getCity());
+        Assert.assertSame(addressId, addrIdFromOrder);
+        orderRepository.deleteById(orderSaved.getId());
         addressRepository.deleteById(addressId);
-
     }
 
 
