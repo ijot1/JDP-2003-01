@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Optional;
@@ -15,8 +16,11 @@ import java.util.Optional;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class AddressRepositoryTestSuite {
+
+
     @Autowired
     private AddressRepository addressRepository;
+
 
     @Test
     public void testAddressWithOrder() {
@@ -40,9 +44,11 @@ public class AddressRepositoryTestSuite {
         Address saveAddress = addressRepository.save(address);
         Long addressId = saveAddress.getId();
 
-        Assert.assertEquals((Object) 1L, addressId);
+        Assert.assertEquals("Radom", order.getAddress().getCity());
         addressRepository.deleteById(addressId);
+
     }
+
 
     @Test
     public void testSaveAddress() {
@@ -60,6 +66,7 @@ public class AddressRepositoryTestSuite {
         Assert.assertEquals((Object) 1L, addressId);
         addressRepository.deleteById(addressId);
     }
+
 
     @Test
     public void testGetAllAddresses() {
@@ -87,6 +94,7 @@ public class AddressRepositoryTestSuite {
 
         Assert.assertEquals(2, countOfAddresses);
     }
+
 
     @Test
     public void testGetAddressById() {
